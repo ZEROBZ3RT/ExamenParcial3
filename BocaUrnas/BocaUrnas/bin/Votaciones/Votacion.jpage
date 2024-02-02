@@ -1,0 +1,78 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class BocaDeUrnasApp {
+
+    private static DefaultListModel<String> modeloCandidatos;
+    private static JTextField txtNombreCandidato;
+    private static JTextField txtPartidoCandidato;
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> crearInterfaz());
+    }
+
+    private static void crearInterfaz() {
+        JFrame ventana = new JFrame("Encuestadora");
+
+        ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        ventana.setSize(400, 300);
+
+        JPanel panelPrincipal = new JPanel(new BorderLayout());
+
+        JLabel labelTitulo = new JLabel("Agregar Urnas");
+        labelTitulo.setHorizontalAlignment(JLabel.CENTER);
+        panelPrincipal.add(labelTitulo, BorderLayout.NORTH);
+
+        JPanel panelFormulario = new JPanel(new FlowLayout());
+        modeloCandidatos = new DefaultListModel<>();
+        JList<String> listaCandidatos = new JList<>(modeloCandidatos);
+        JScrollPane scrollPane = new JScrollPane(listaCandidatos);
+        panelPrincipal.add(scrollPane, BorderLayout.CENTER);
+
+        txtNombreCandidato = new JTextField(15);
+        txtPartidoCandidato = new JTextField(15);
+
+        JButton btnAgregarCandidato = new JButton("Agregar Candidato");
+        btnAgregarCandidato.addActionListener(e -> agregarCandidato());
+
+        JButton btnVotar = new JButton("Votar");
+        btnVotar.addActionListener(e -> votar());
+
+        panelFormulario.add(txtNombreCandidato);
+        panelFormulario.add(txtPartidoCandidato);
+        panelFormulario.add(btnAgregarCandidato);
+        panelFormulario.add(btnVotar);
+
+        panelPrincipal.add(panelFormulario, BorderLayout.SOUTH);
+
+        ventana.getContentPane().add(panelPrincipal);
+
+        ventana.setVisible(true);
+    }
+
+    private static void agregarCandidato() {
+        String nombre = txtNombreCandidato.getText();
+        String partido = txtPartidoCandidato.getText();
+
+        if (!nombre.isEmpty() && !partido.isEmpty()) {
+            String candidato = nombre + " (" + partido + ")";
+            modeloCandidatos.addElement(candidato);
+
+            txtNombreCandidato.setText("");
+            txtPartidoCandidato.setText();
+        } else {
+            JOptionPane.showMessageDialog(null, "Por favor, ingresa el nombre y el partido del candidato.");
+        }
+    }
+
+    private static void votar() {
+        int indiceSeleccionado = modeloCandidatos.indexOf(txtNombreCandidato.getText());
+        if (indiceSeleccionado != -1) {
+            JOptionPane.showMessageDialog(null, "Votaste por: " + modeloCandidatos.getElementAt(indiceSeleccionado));
+        } else {
+            JOptionPane.showMessageDialog(null, "Selecciona un candidato antes de votar.");
+        }
+    }
+}
